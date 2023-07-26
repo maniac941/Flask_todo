@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}My Todos - Todo App{% endblock %}
+
+{% block content %}
+<h2>My Todos</h2>
+<form method="post" action="{{ url_for('todos') }}">
+    <input type="text" name="title" placeholder="Enter a new todo" required>
+    <button type="submit">Add</button>
+</form>
+<table class="table table-primary" style="margin: 20px;">
+    <thead>
+        <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Title</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for todo in todos %}
+        <tr>
+            <td>
+                <form style="display: inline;" method="post" action="{{ url_for('update_todo', todo_id=todo.id) }}">
+                    {{ csrf_token }}
+                    <input type="checkbox" name="isCompleted" onchange="this.form.submit()" {% if todo.is_completed %} checked {% endif %}>
+                </form>
+            </td>
+            <td>
+                <a href="{{ url_for('update_todo', todo_id=todo.id) }}" style="{% if todo.is_completed %}text-decoration: line-through{% endif %}">{{ todo.title }}</a>
+            </td>
+            <td>
+                <form style="display: inline;" method="post" action="{{ url_for('delete_todo', todo_id=todo.id) }}">
+                    {{ csrf_token }}
+                    <button type="submit"><i class="far fa-trash-alt"></i></button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
